@@ -1,0 +1,48 @@
+# Ignore Visual Studio files
+.vs/
+.vscode/
+*.vcxproj
+*.vcxproj.filters
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Ignore build folders
+/build
+/bin
+
+# Ignore generated files from assets (if any)
+/assets/brickadia/
+
+# Ignore large file types (like IPCH files, etc.)
+*.ipch
+*.db
+
+# Ignore the Git index and cache for large files
+*.bak
+*.log
+# Ignore Visual Studio files
+.vs/
+.vscode/
+*.vcxproj
+*.vcxproj.filters
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Ignore build folders
+/build
+/bin
+
+# Ignore generated files from assets (if any)
+/assets/brickadia/
+
+# Ignore large file types (like IPCH files, etc.)
+*.ipch
+*.db
+
+# Ignore the Git index and cache for large files
+*.bak
+*.log
