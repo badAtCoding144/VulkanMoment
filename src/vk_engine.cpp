@@ -3,12 +3,19 @@
 
 #include <SDL.h>
 #include <SDL_vulkan.h>
+#include <SDL_keyboard.h>
+#include <SDL_keycode.h>
+#include <SDL_scancode.h>
 
 #include <vk_initializers.h>
 #include <vk_types.h>
+#include <fmt/core.h> // Add this include at the top of the file
+
 
 #include <chrono>
 #include <thread>
+
+constexpr bool bUseValidationLayers = false;
 
 VulkanEngine* loadedEngine = nullptr;
 
@@ -73,15 +80,23 @@ void VulkanEngine::run()
                     stop_rendering = false;
                 }
             }
-        }
+            else if (e.type == SDL_KEYDOWN) {
 
-        // do not draw if we are minimized
-        if (stop_rendering) {
-            // throttle the speed to avoid the endless spinning
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            continue;
-        }
+                // Replace the problematic line with the following:
+                fmt::print("{}\n", e.key.keysym.sym);
+                if (e.key.keysym.sym == SDLK_ESCAPE) {
+                    bQuit = true;
+                }
+            }
 
-        draw();
+            // do not draw if we are minimized
+            if (stop_rendering) {
+                // throttle the speed to avoid the endless spinning
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                continue;
+            }
+
+            draw();
+        }
     }
 }
