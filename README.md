@@ -28,7 +28,7 @@ port for commands to execute - GPUs will have sets of queues with different prop
 Some allow only certain kinds of commands - command buffers are executed by submitting them to our queue, copying the render commands onto the GPU for execution.
 
 ### VkDescriptorSet
-Holds information that connects shader inputs and VkBuffer resources and VkImage textures. (A set of gpu side pointers that we bind once??? idk i dont get it)
+Holds information that connects shader inputs and VkBuffer resources and VkImage textures. (A set of gpu side pointers that we bind once??? idk sounds like our uniform and input buffer definitions at the top of a shader?)
 
 ### VkSwapChainKHR
 Frame buffer? - it comes from the extension VK_KHR_swapchain - everyone mentioning swapchain I'll have to see what it's about.
