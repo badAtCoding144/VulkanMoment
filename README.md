@@ -50,7 +50,7 @@ Creating a swapchain on a given window size causes us to have to remake it when 
 The format the swapchain uses for images can be different between platforms and GPUs - so store the image format that the swapchain is set to otherwise we will have artifacts and crashes for sure.
 ALWAYS select Present Mode, this controls how the swapchain syncronizes to the screen display.
 
-'''
+```
 // Provided by VK_KHR_surface
 typedef enum VkPresentModeKHR {
     VK_PRESENT_MODE_IMMEDIATE_KHR = 0,                            //SWAPCHAIN DOES NOT WAIT FOR ANYTING - ACCEPTS INSTANT PUSHING OF IMAGES - SCREEN TEAR MOMENT
@@ -64,7 +64,7 @@ typedef enum VkPresentModeKHR {
   // Provided by VK_EXT_present_mode_fifo_latest_ready
     VK_PRESENT_MODE_FIFO_LATEST_READY_EXT = 1000361000,
 } VkPresentModeKHR;
-'''
+```
 
 
 ### VkSemaphore
