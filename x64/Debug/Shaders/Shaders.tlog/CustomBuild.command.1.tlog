@@ -1,0 +1,48 @@
+^F:\REPOSITORIES\VULKANMOMENT\CMAKEFILES\B7057E48EEA6D783A6A215155F63B8AB\GRADIENT.COMP.SPV.RULE
+setlocal
+C:\VulkanSDK\1.4.304.1\Bin\glslangValidator.exe -V F:/Repositories/VulkanMoment/shaders/gradient.comp -o F:/Repositories/VulkanMoment/shaders/gradient.comp.spv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\REPOSITORIES\VULKANMOMENT\CMAKEFILES\B7057E48EEA6D783A6A215155F63B8AB\GRADIENT_COLOR.COMP.SPV.RULE
+setlocal
+C:\VulkanSDK\1.4.304.1\Bin\glslangValidator.exe -V F:/Repositories/VulkanMoment/shaders/gradient_color.comp -o F:/Repositories/VulkanMoment/shaders/gradient_color.comp.spv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\REPOSITORIES\VULKANMOMENT\CMAKEFILES\B7057E48EEA6D783A6A215155F63B8AB\SKY.COMP.SPV.RULE
+setlocal
+C:\VulkanSDK\1.4.304.1\Bin\glslangValidator.exe -V F:/Repositories/VulkanMoment/shaders/sky.comp -o F:/Repositories/VulkanMoment/shaders/sky.comp.spv
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\REPOSITORIES\VULKANMOMENT\CMAKEFILES\CADD7D4A398EB14F5455EF5477609B50\SHADERS.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\REPOSITORIES\VULKANMOMENT\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/Repositories/VulkanMoment -BF:/Repositories/VulkanMoment --check-stamp-file F:/Repositories/VulkanMoment/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

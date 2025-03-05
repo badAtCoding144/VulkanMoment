@@ -1,0 +1,9 @@
+F:\Repositories\VulkanMoment\src\CMakeFiles\engine.dir\cmake_pch.cxx;F:\Repositories\VulkanMoment\src\engine.dir\Debug\cmake_pch.obj
+F:\Repositories\VulkanMoment\src\main.cpp;F:\Repositories\VulkanMoment\src\engine.dir\Debug\main.obj
+F:\Repositories\VulkanMoment\src\vk_initializers.cpp;F:\Repositories\VulkanMoment\src\engine.dir\Debug\vk_initializers.obj
+F:\Repositories\VulkanMoment\src\vk_images.cpp;F:\Repositories\VulkanMoment\src\engine.dir\Debug\vk_images.obj
+F:\Repositories\VulkanMoment\src\vk_descriptors.cpp;F:\Repositories\VulkanMoment\src\engine.dir\Debug\vk_descriptors.obj
+F:\Repositories\VulkanMoment\src\vk_pipelines.cpp;F:\Repositories\VulkanMoment\src\engine.dir\Debug\vk_pipelines.obj
+F:\Repositories\VulkanMoment\src\vk_engine.cpp;F:\Repositories\VulkanMoment\src\engine.dir\Debug\vk_engine.obj
+F:\Repositories\VulkanMoment\src\vk_loader.cpp;F:\Repositories\VulkanMoment\src\engine.dir\Debug\vk_loader.obj
+F:\Repositories\VulkanMoment\src\camera.cpp;F:\Repositories\VulkanMoment\src\engine.dir\Debug\camera.obj

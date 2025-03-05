@@ -1,0 +1,12 @@
+{
+	"InstallScripts" : 
+	[
+		"F:/Repositories/VulkanMoment/cmake_install.cmake",
+		"F:/Repositories/VulkanMoment/third_party/cmake_install.cmake",
+		"F:/Repositories/VulkanMoment/third_party/fastgltf/cmake_install.cmake",
+		"F:/Repositories/VulkanMoment/third_party/fmt/cmake_install.cmake",
+		"F:/Repositories/VulkanMoment/third_party/SDL/cmake_install.cmake",
+		"F:/Repositories/VulkanMoment/src/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
