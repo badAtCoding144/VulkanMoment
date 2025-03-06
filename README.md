@@ -58,14 +58,57 @@ A texture we can read from and write to
 Holds our render pipeline -> shaders, rasterization options, depth buffers/stencils or face culling settings for example
 
 # VkCommandBuffer
+This records all of our commands to be executed by the GPU followed by submitting them for execution using VkQueueSubmit, after these steps execution starts.
+When in the Ready state (default after initialization), you can call vkBeginCommandBuffer() to put it into the Recording state.
+Now you can start inputting commands into it with vkCmdXXXXX functions.
+When done, call vkEndCommandBuffer() to finish the recording the commands and put it in the Executable state where it is ready to be submitted into the GPU.
+vkQueueSubmit also accepts submitting multiple command buffers together. Any command buffer that is submitted is put in the Pending state.
+Once submitted our commandbuffer is still 'alive', and being consumed by the GPU, at this point it is NOT safe to reset the command buffer yet.
+Make sure execution is done (with a fence or some other synchronization tool) and reset the command buffer after using vkResetCommandBuffer().
+As we will want to continue drawing the next frame while the command buffer is executed, we are going to double-buffer the commands. 
+This way, while the gpu is busy rendering and processing one buffer, we can write into a different one.
+
+
+for more detailed descriptions and specifications regarding the lifecycle of a commandbuffer and its states visit:
+
+https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#commandbuffers-lifecycle
+
+
+
 We encode our GPU commands in here - anything not executed in the driver.
+The flow of executing a command goes
+-> allocate a VkCommandBuffer from a VkCommandPool 
+-> record commands into the command buffer, using VkCmdXXXXX functions.
+-> submit the command buffer into a VkQueue, which starts executing the commands.
+
+in Vulkan recording commands is cheap but submitting them is usually more costly - VkQueueSubmit calls.
+We can record commandbuffers in parallel (goated) -> recording multiple commandbuffer from multiple threads is safe
+but you need to have 1 VkCommandPool and 1 VkCommandBuffer per thread (minimum), and make sure that each thread only uses their own command buffers & pools - not actually memory safe.
+Once that is done we submit our commandbuffer to out queue but this is not thread safe.
+It's common to do the submit in a seperate background thread so we can continue running the render loop.
+
 
 # VkQueue
+VkQueueSubmit is not thread safe.
 port for commands to execute - GPUs will have sets of queues with different properties. 
 Some allow only certain kinds of commands - command buffers are executed by submitting them to our queue, copying the render commands onto the GPU for execution.
+Commands submitted to separate queues may execute at once.
+It's possible to create a VkQueue specifically for background work and have it separated from the normal rendering.
+All queues have a queue family (queue type) in vulkan and this just defines what kinds of commands the queue supports.
+Different GPUs support different Queue Families - here is the queue families my GPU supports -> https://vulkan.gpuinfo.org/displayreport.php?id=34212#queuefamilies
+It is common to see engines using 3 queue families. One for drawing the frame, other for async compute, and other for data transfer, I will stick to 1 queue for now since n00b.
 
 # VkDescriptorSet
 Holds information that connects shader inputs and VkBuffer resources and VkImage textures. (A set of gpu side pointers that we bind once??? idk sounds like our uniform and input buffer definitions at the top of a shader?)
+
+#VkCommandPool
+A VkCommandPool is generated using VkDevice - we also need an index of the queue family this commandpool will generate commands from.
+They said to think of it as an allocator for VkCommandBuffers.
+You can allocate as many VkCommandBuffer as you want from a given pool, but you can only record commands from one thread at a time. 
+If you want multithreaded command recording, you need more VkCommandPool objects.
+So in practice we would probably want to create pair of VkCommandPools and VkCommandBuffers - but it depends.
+
+
 
 # VkSwapChainKHR
 Frame buffer? - it comes from the extension VK_KHR_swapchain - a set of framebuffers in opengl terms?
