@@ -14,7 +14,7 @@ Once we have a VkInstance we can query it for what GPUs are in the system - vulk
 We lowkey want the user to be able to choose since if they want to use an integrated GPU to save power they should be able to.
 We can check the memory size and extensions available for our GPU to measure performance.
 
-## Vulkan Features
+## Vulkan physical device Features : https://docs.vulkan.org/spec/latest/chapters/limits.html#VkPhysicalDeviceFeatures
 In our initialization code we declare a vkb::Instancebuilder and initialize it by setting its name and validation layers, debug messenger, the api version and then call .build().
 Grabbing the instance and setting our engines(object) instance and debug messenger to the new Vulkan instances, we can then set features by calling constructors for VkPhysicalDeviceVulkan13Features and  VkPhysicalDeviceVulkan12Features.
 
