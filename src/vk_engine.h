@@ -4,9 +4,20 @@
 #pragma once
 
 #include <vk_types.h>
+#include <vk_types.h>
+#include <vk_initializers.h>
+
+#include <vkBootstrap.h>
+
 
 class VulkanEngine {
 public:
+
+	VkInstance _instance;						//Vulkan library
+	VkDebugUtilsMessengerEXT _debug_messenger;	//debug output
+	VkPhysicalDevice _chosenGPU;				//default Device
+	VkDevice _device;							//Logical Device for commands	
+	VkSurfaceKHR _surface;						//Vulkan window surface
 
 	bool _isInitialized{ false };
 	int _frameNumber {0};
@@ -28,4 +39,11 @@ public:
 
 	//run main loop
 	void run();
+
+private:
+
+	void init_vulkan();
+	void init_swapchain();
+	void init_commands();
+	void init_sync_structures();
 };
