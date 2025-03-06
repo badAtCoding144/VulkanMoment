@@ -103,7 +103,41 @@ void VulkanEngine::init_vulkan() {
 
 }
 
+
+
+void VulkanEngine::destroy_swapchain() {
+    vkDestroySwapchainKHR(_device, _swapchain, nullptr);    //first delete swapchain object which deletes the images held internally
+
+		for (int i = 0; i < _swapchainImageViews.size(); i++) {
+			vkDestroyImageView(_device, _swapchainImageViews[i], nullptr); //destroy the imageView for every image
+		}
+}
+
+void VulkanEngine::create_swapchain(uint32_t width, uint32_t height) {
+
+	vkb::SwapchainBuilder swapchainBuilder{ _chosenGPU, _device, _surface };
+    _swapchainImageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+
+    vkb::Swapchain vkbSwapchain = swapchainBuilder
+        //.use_default_format_selection()
+        .set_desired_format(VkSurfaceFormatKHR{ .format = _swapchainImageFormat, .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR })
+        //use vsync present mode
+        .set_desired_present_mode(VK_PRESENT_MODE_FIFO_KHR)
+        .set_desired_extent(width,height)
+        .add_image_usage_flags(VK_IMAGE_USAGE_TRANSFER_DST_BIT)
+        .build()
+        .value();
+
+    _swapchainExtent = vkbSwapchain.extent;
+	_swapchain = vkbSwapchain.swapchain;
+	_swapchainImages = vkbSwapchain.get_images().value();
+	_swapchainImageViews = vkbSwapchain.get_image_views().value();
+
+}
+
+
 void VulkanEngine::init_swapchain() {
+	create_swapchain(_windowExtent.width, _windowExtent.height);
 }
 
 void VulkanEngine::init_commands() {
@@ -115,9 +149,24 @@ void VulkanEngine::init_sync_structures() {
 
 
 
+
+//usually destroying the engine is done in the reverse order of creation, if we know what we doing we could deviate from this but not now
+//in this case swapchain -> device -> surface -> instance -> SDL Window
 void VulkanEngine::cleanup()
 {
     if (_isInitialized) {
+
+        destroy_swapchain();
+
+		vkDestroyDevice(_device, nullptr);
+
+		vkDestroySurfaceKHR(_instance, _surface, nullptr);
+
+
+        vkb::destroy_debug_utils_messenger(_instance, _debug_messenger, nullptr); //idk if this can be put in different order tbh = accidental validation layer test mayb
+
+		vkDestroyInstance(_instance, nullptr);
+
 
         SDL_DestroyWindow(_window);
     }
