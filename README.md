@@ -42,7 +42,7 @@ Holds information that connects shader inputs and VkBuffer resources and VkImage
 ### VkSwapChainKHR
 Frame buffer? - it comes from the extension VK_KHR_swapchain - a set of framebuffers in opengl terms?
 
-###Swapchain
+### Swapchain
 We use the swapchain to render - it is a OS/windowing structure with images we can draw and display on the screen.
 Holds a list of images and image-views accessible by the operating system for display. You usually want to have a swapchain with 2 - 3 images for double/triple buffering
 Swapchains are not in the core Vulkan spec as they are optional - for example doing compute shader calculations or offline rendering does not require a swapchain.
