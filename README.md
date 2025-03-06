@@ -1,6 +1,6 @@
 # Vulkan Notes
 
-# Vulkan Objects that I know about and their use:
+# Vulkan Objects and their uses:
 
 # VkInstance
 The Vulkan API context
