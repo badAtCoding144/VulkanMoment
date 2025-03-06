@@ -1,14 +1,14 @@
 # Vulkan Notes
 
-## Vulkan Objects that I know about and their use:
+# Vulkan Objects that I know about and their use:
 
-### VkInstance
+# VkInstance
 The Vulkan API context
 The root of all evil, you can enable things like validation layers, instance extensions and loggers for when we debuggenning, evaluating performance or checking branch execution. 
 Main thing is validation layers and instance extensions.
 We only create a single per application since it is the global context for the app.
 
-### VkPhysicalDevice
+# VkPhysicalDevice
 Our GPU - used to get specifics about our hardware.
 Once we have a VkInstance we can query it for what GPUs are in the system - vulkan lets us get a list of the GPUs represented by the VkPhysicalDevice handle - reference to the GPU.
 We lowkey want the user to be able to choose since if they want to use an integrated GPU to save power they should be able to.
@@ -20,17 +20,17 @@ Grabbing the instance and setting our engines(object) instance and debug messeng
 
 ## Some features from Vulkan 13 and 12 and what they do:
 
-## features.dynamicRendering(13)
+### features.dynamicRendering(13)
 This allows us to render without needing a VkRenderPass and VkFrameBuffer.
 Simplifies rendering for noobs like me and letting me specify render targets directly in VkRenderingInfor instead of creating VkRenderPass before.
 For more flexible render pipelines
-## features.sunchronization2(13)
+### features.sunchronization2(13)
 Enables a more flexible and readable synchronization API that replaces VkPipelineStateFlags with VkPipelineStateFlags2 for better synchro and barriers.
 Better multi-threading and GPU workload synchronization.
-## features.bufferDeviceAddress(12)
+### features.bufferDeviceAddress(12)
 Allows Gpu pointers to be used for buffer memory - ray tracing, linked lists and more advanced GPU operations?
 Essential for ray tracing, gpu driven renders and mesh shaders
-## features.descriptorIndexing(12)
+### features.descriptorIndexing(12)
 Enables non uniform indexing and bindless resources, letting shaders dynamically index into large descriptor arrays.
 Good for reducing the number of descriptor sets and increasing flexibility in managing GPU resources.
 Useful in deferred rendering, bindless textures and GPU-driven pipelines.
@@ -40,35 +40,35 @@ enabling vulkan 1.3 features does not automatically enable Vulakn 1.2 features s
 
 
 
-### VkDevice
+# VkDevice
 The logical GPU that we execute things on.
 We create the VkDevice using the VkPhysical device - this is the GPU driver.
 Most Vulkan commands outside debug utils and initialization needs a VkDevice - we create this device and add a list of extensions we want to enable - don't enable extensions you don't need since unnecessary checks will slow our program down.
 We can create multiple  VkDevices which correspond to different GPUs and use multiple GPUs for the same program - maybe running compute shaders across multiple GPUs.
 
-### VkBuffer
+# VkBuffer
 GPU visible memory
 
-### VkImage
+# VkImage
 A texture we can read from and write to
 
-### VkPipeline
+# VkPipeline
 Holds our render pipeline -> shaders, rasterization options, depth buffers/stencils or face culling settings for example
 
-### VkCommandBuffer
+# VkCommandBuffer
 We encode our GPU commands in here - anything not executed in the driver.
 
-### VkQueue
+# VkQueue
 port for commands to execute - GPUs will have sets of queues with different properties. 
 Some allow only certain kinds of commands - command buffers are executed by submitting them to our queue, copying the render commands onto the GPU for execution.
 
-### VkDescriptorSet
+# VkDescriptorSet
 Holds information that connects shader inputs and VkBuffer resources and VkImage textures. (A set of gpu side pointers that we bind once??? idk sounds like our uniform and input buffer definitions at the top of a shader?)
 
-### VkSwapChainKHR
+# VkSwapChainKHR
 Frame buffer? - it comes from the extension VK_KHR_swapchain - a set of framebuffers in opengl terms?
 
-### Swapchain
+# Swapchain
 We use the swapchain to render - it is a OS/windowing structure with images we can draw and display on the screen.
 Holds a list of images and image-views accessible by the operating system for display. You usually want to have a swapchain with 2 - 3 images for double/triple buffering
 Swapchains are not in the core Vulkan spec as they are optional - for example doing compute shader calculations or offline rendering does not require a swapchain.
@@ -93,10 +93,10 @@ typedef enum VkPresentModeKHR {
 ```
 
 
-### VkSemaphore
+# VkSemaphore
 Synchronizes execution of commands (GPU->GPU), used to sync multiple command buffer submissions in succession.
 
-### VkFence
+# VkFence
 Synchronizes GPU to CPU exection of commands. Used to confirm if a command buffer has finished executing.
 
 
