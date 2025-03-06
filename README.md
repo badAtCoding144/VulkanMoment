@@ -74,5 +74,27 @@ Synchronizes execution of commands (GPU->GPU), used to sync multiple command buf
 Synchronizes GPU to CPU exection of commands. Used to confirm if a command buffer has finished executing.
 
 
+## Vulkan Features
+In our initialization code we declare a vkb::Instancebuilder and initialize it by setting its name and validation layers, debug messenger, the api version and then call .build().
+Grabbing the instance and setting our engines(object) instance and debug messenger to the new Vulkan instances, we can then set features by calling constructors for VkPhysicalDeviceVulkan13Features and  VkPhysicalDeviceVulkan12Features.
 
+## Some features from Vulkan 13 and 12 and what they do:
+
+# features.dynamicRendering(13)
+This allows us to render without needing a VkRenderPass and VkFrameBuffer.
+Simplifies rendering for noobs like me and letting me specify render targets directly in VkRenderingInfor instead of creating VkRenderPass before.
+For more flexible render pipelines
+# features.sunchronization2(13)
+Enables a more flexible and readable synchronization API that replaces VkPipelineStateFlags with VkPipelineStateFlags2 for better synchro and barriers.
+Better multi-threading and GPU workload synchronization.
+# features.bufferDeviceAddress(12)
+Allows Gpu pointers to be used for buffer memory - ray tracing, linked lists and more advanced GPU operations?
+Essential for ray tracing, gpu driven renders and mesh shaders
+# features.descriptorIndexing(12)
+Enables non uniform indexing and bindless resources, letting shaders dynamically index into large descriptor arrays.
+Good for reducing the number of descriptor sets and increasing flexibility in managing GPU resources.
+Useful in deferred rendering, bindless textures and GPU-driven pipelines.
+
+## Remember
+enabling vulkan 1.3 features does not automatically enable Vulakn 1.2 features so we need to create 2 VkPhysicalDeviceVulkan(n)Features or more depending on the sitch.
 
