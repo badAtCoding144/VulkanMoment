@@ -9,6 +9,7 @@ Main thing is validation layers and instance extensions.
 We only create a single per application since it is the global context for the app.
 
 # VkPhysicalDevice
+This cannot be destroyed in cleanup since it is not a vulkan resource - just a handle.
 Our GPU - used to get specifics about our hardware.
 Once we have a VkInstance we can query it for what GPUs are in the system - vulkan lets us get a list of the GPUs represented by the VkPhysicalDevice handle - reference to the GPU.
 We lowkey want the user to be able to choose since if they want to use an integrated GPU to save power they should be able to.
@@ -16,6 +17,7 @@ We can check the memory size and extensions available for our GPU to measure per
 
 ## Vulkan physical device Features : 
 https://docs.vulkan.org/spec/latest/chapters/limits.html#VkPhysicalDeviceFeatures
+
 https://docs.vulkan.org/spec/latest/chapters/limits.html#VkPhysicalDeviceVulkan12Features
 
 In our initialization code we declare a vkb::Instancebuilder and initialize it by setting its name and validation layers, debug messenger, the api version and then call .build().
