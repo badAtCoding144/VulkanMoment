@@ -20,8 +20,8 @@
 
 #include <chrono>
 #include <thread>
-
-constexpr bool bUseValidationLayers = false;
+ 
+constexpr bool bUseValidationLayers = true;
 
 VulkanEngine* loadedEngine = nullptr;
 
@@ -101,6 +101,10 @@ void VulkanEngine::init_vulkan() {
     _device = vkbDevice.device;
 	_chosenGPU = physicalDevice.physical_device;
 
+    //use vkbootstrap to get a graphics queue
+	_graphicsQueue = vkbDevice.get_queue(vkb::QueueType::graphics).value();
+    _graphicsQueueFamily = vkbDevice.get_queue_index(vkb::QueueType::graphics).value();
+
 }
 
 
@@ -141,6 +145,34 @@ void VulkanEngine::init_swapchain() {
 }
 
 void VulkanEngine::init_commands() {
+    //create a command pool for commands submitted to graphics q
+    //want the pool to allow for resetting individual command buffers
+    VkCommandPoolCreateInfo commandPoolInfo = {}; //allocating a vulkan struct to 0 is usually safe -> dont leave uninitialized data in the struct
+	commandPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    commandPoolInfo.pNext = nullptr;
+	commandPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT; //allow individual command buffer resets -> alternatively we can reset the entire pool
+	commandPoolInfo.queueFamilyIndex = _graphicsQueueFamily; //command pool will create commands that are compatible with queues that have graphics capability
+
+    for (int i = 0; i < FRAME_OVERLAP; i++) {
+		VK_CHECK(vkCreateCommandPool(_device, &commandPoolInfo, nullptr, &_frames[i]._commandPool)); //create command pool -> vkcheck ensures it succeeds or aborts
+        //commandpool will be overwritten if this succeeds
+
+
+        //allocate default command buffer to use for rendering
+        VkCommandBufferAllocateInfo cmdAllocInfo = {};
+        cmdAllocInfo.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR;
+        cmdAllocInfo.pNext = nullptr;
+		cmdAllocInfo.commandPool = _frames[i]._commandPool; //specify which command pool to allocate from
+		cmdAllocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY; 
+		cmdAllocInfo.commandBufferCount = 1; //allocate a single command buffer -> can do more if needed -> make sure we have enough space though
+        cmdAllocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+
+		VK_CHECK(vkAllocateCommandBuffers(_device, &cmdAllocInfo, &_frames[i]._mainCommandBuffer)); //allocate command buffer -> the parent pool must be specified
+
+     
+    
+    }
+
 }
 
 void VulkanEngine::init_sync_structures() {

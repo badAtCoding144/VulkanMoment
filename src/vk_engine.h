@@ -9,9 +9,23 @@
 
 #include <vkBootstrap.h>
 
+constexpr unsigned int FRAME_OVERLAP = 2;
+
+struct FrameData {
+	VkCommandPool _commandPool;
+	VkCommandBuffer _mainCommandBuffer;
+};
+
 
 class VulkanEngine {
 public:
+
+	FrameData _frames[FRAME_OVERLAP];
+	FrameData& get_current_frame() { return _frames[_frameNumber % FRAME_OVERLAP]; };
+
+	VkQueue _graphicsQueue;
+	uint32_t _graphicsQueueFamily;
+
 
 	VkInstance _instance;						//Vulkan library
 	VkDebugUtilsMessengerEXT _debug_messenger;	//debug output
@@ -46,6 +60,8 @@ public:
 
 	//run main loop
 	void run();
+
+
 
 private:
 	void create_swapchain(uint32_t width, uint32_t height);
