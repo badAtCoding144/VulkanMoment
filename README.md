@@ -45,6 +45,8 @@ The logical GPU that we execute things on.
 We create the VkDevice using the VkPhysical device - this is the GPU driver.
 Most Vulkan commands outside debug utils and initialization needs a VkDevice - we create this device and add a list of extensions we want to enable - don't enable extensions you don't need since unnecessary checks will slow our program down.
 We can create multiple  VkDevices which correspond to different GPUs and use multiple GPUs for the same program - maybe running compute shaders across multiple GPUs.
+When we have a physical device we make a VkDeviceBuilder by passing the VkPhysicalDevice to its constructor and returing the .value field - we can then set our engines chosen GPU and device.
+
 
 # VkBuffer
 GPU visible memory
