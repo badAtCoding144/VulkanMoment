@@ -72,7 +72,7 @@ Once submitted our commandbuffer is still 'alive', and being consumed by the GPU
 Make sure execution is done (with a fence or some other synchronization tool) and reset the command buffer after using vkResetCommandBuffer().
 As we will want to continue drawing the next frame while the command buffer is executed, we are going to double-buffer the commands. 
 This way, while the gpu is busy rendering and processing one buffer, we can write into a different one.
-
+https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#VkCommandBufferAllocateInfo
 
 for more detailed descriptions and specifications regarding the lifecycle of a commandbuffer and its states visit:
 
@@ -112,7 +112,7 @@ They said to think of it as an allocator for VkCommandBuffers.
 You can allocate as many VkCommandBuffer as you want from a given pool, but you can only record commands from one thread at a time. 
 If you want multithreaded command recording, you need more VkCommandPool objects.
 So in practice we would probably want to create pair of VkCommandPools and VkCommandBuffers - but it depends.
-
+https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#VkCommandPoolCreateInfo
 
 
 # VkSwapChainKHR
