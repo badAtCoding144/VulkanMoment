@@ -145,9 +145,56 @@ typedef enum VkPresentModeKHR {
 
 # VkSemaphore
 Synchronizes execution of commands (GPU->GPU), used to sync multiple command buffer submissions in succession.
+They define operation orders for GPU commands and execute them sequentially. Some Vulkan objects support either signal or wait semaphores.
+Multiple operations can wait on a semaphore but only one operation can signal a semaphores completion.
+
+### Pseudocode for 3 operations being executed in order using semaphores:
+```
+VkSemaphore Task1Semaphore;
+VkSemaphore Task2Semaphore;
+
+VkOperationInfo OpAlphaInfo;
+// Operation Alpha will signal the semaphore 1
+OpAlphaInfo.signalSemaphore = Task1Semaphore;
+
+VkDoSomething(OpAlphaInfo);
+
+VkOperationInfo OpBetaInfo;
+
+// Operation Beta signals semaphore 2, and waits on semaphore 1
+OpBetaInfo.signalSemaphore = Task2Semaphore;
+OpBetaInfo.waitSemaphore = Task1Semaphore;
+
+VkDoSomething(OpBetaInfo);
+
+VkOperationInfo OpGammaInfo;
+//Operation gamma waits on semaphore 2
+OpGammaInfo.waitSemaphore = Task2Semaphore;
+
+VkDoSomething(OpGammaInfo);
+
+```
+This Vulkan object is obviously used to execute tasks/operations that have dependencies between them.
 
 # VkFence
 Synchronizes GPU to CPU exection of commands. Used to confirm if a command buffer has finished executing.
+This is an optional parameter for things like VkQueueSubmit that can be used to confirm finished execution and synchronize the CPU render loop and the GPU.
+The fence should be signalled when we submit it as part of a command using VkWaitForFences this is blocking the CPU to wait for GPU execution to finish.
+
+### here is some pseudo code for the logic:
+```
+//we have a fence object created from somewhere
+VkFence myFence;
+
+//start some operation on the GPU
+VkSomeOperation(whatever, myFence);
+
+// block the CPU until the GPU operation finishes
+VkWaitForFences(myFence);
+//fences always have to be reset before they can be used again
+VkResetFences(myFence);
+
+```
 
 
 
