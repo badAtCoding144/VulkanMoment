@@ -143,6 +143,16 @@ void VulkanEngine::create_swapchain(uint32_t width, uint32_t height) {
 
 }
 
+VkCommandBufferBeginInfo vkinit::command_buffer_begin_info(VkCommandBufferUsageFlags flags /*=0*/)
+{
+    VkCommandBufferBeginInfo info = {};
+    info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    info.pNext = nullptr;
+
+    info.pInheritanceInfo = nullptr;
+    info.flags = flags;
+    return info;
+}
 
 void VulkanEngine::init_swapchain() {
 	create_swapchain(_windowExtent.width, _windowExtent.height);
@@ -237,6 +247,22 @@ void VulkanEngine::draw()
     //wait for the gpu to finish rendering the last frame (timeout at 1 sec)
 	VK_CHECK(vkWaitForFences(_device, 1, &get_current_frame()._renderFence, true, 1000000000));
 	VK_CHECK(vkResetFences(_device, 1, &get_current_frame()._renderFence));
+
+    //request image from the swapchain
+    uint32_t swapchainImageIndex;
+    VK_CHECK(vkAcquireNextImageKHR(_device, _swapchain, 1000000000, get_current_frame()._swapchainSemaphore,nullptr, &swapchainImageIndex));
+
+    VkCommandBuffer cmd = get_current_frame()._mainCommandBuffer;
+
+    //now we are sure the commands finish executing and we reset it to begin recording again
+    VK_CHECK(vkResetCommandBuffer(cmd, 0));
+
+    //being buffer recording -> we will use this exactly once
+    VkCommandBufferBeginInfo cmdBeginInfo = vkinit::command_buffer_begin_info(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+
+    //start command buffer recording
+    VK_CHECK(vkBeginCommandBuffer(cmd, &cmdBeginInfo));
+
 }
 
 void VulkanEngine::run()
