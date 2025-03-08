@@ -28,6 +28,9 @@ VulkanEngine* loadedEngine = nullptr;
 VulkanEngine& VulkanEngine::Get() { return *loadedEngine; }
 
 
+
+
+
 void VulkanEngine::init()
 {
     // only one engine initialization is allowed with the application.
@@ -109,6 +112,7 @@ void VulkanEngine::init_vulkan() {
 
 
 
+
 void VulkanEngine::destroy_swapchain() {
     vkDestroySwapchainKHR(_device, _swapchain, nullptr);    //first delete swapchain object which deletes the images held internally
 
@@ -177,6 +181,20 @@ void VulkanEngine::init_commands() {
 
 void VulkanEngine::init_sync_structures() {
 
+    //create synchronization structs
+    //one fence to control gpu render finish
+    //2 semaphores to synchronize the swapchains 2 frames
+    //fence to start signalled so we wait for the first frame
+	VkFenceCreateInfo fenceCreateInfo = vkinit::fence_create_info(VK_FENCE_CREATE_SIGNALED_BIT);
+    VkSemaphoreCreateInfo semaphoreCreateInfo = vkinit::semaphore_create_info();
+
+    for (int i = 0; i < FRAME_OVERLAP; i++) {
+		VK_CHECK(vkCreateFence(_device, &fenceCreateInfo, nullptr, &_frames[i]._renderFence));
+		VK_CHECK(vkCreateSemaphore(_device, &semaphoreCreateInfo, nullptr, &_frames[i]._swapchainSemaphore));
+		VK_CHECK(vkCreateSemaphore(_device, &semaphoreCreateInfo, nullptr, &_frames[i]._renderSemaphore));
+    
+    }
+
 }
 
 
@@ -187,6 +205,13 @@ void VulkanEngine::init_sync_structures() {
 void VulkanEngine::cleanup()
 {
     if (_isInitialized) {
+
+        //make sure gpu is done executing
+        vkDeviceWaitIdle(_device);
+
+        for (int i = 0; i < FRAME_OVERLAP; i++) {
+            vkDestroyCommandPool(_device, _frames[i]._commandPool, nullptr);//we cannot destory command buffers individually but destroying their parent pool destroys all of the childrens
+        }
 
         destroy_swapchain();
 
@@ -209,7 +234,9 @@ void VulkanEngine::cleanup()
 
 void VulkanEngine::draw()
 {
-    // nothing yet
+    //wait for the gpu to finish rendering the last frame (timeout at 1 sec)
+	VK_CHECK(vkWaitForFences(_device, 1, &get_current_frame()._renderFence, true, 1000000000));
+	VK_CHECK(vkResetFences(_device, 1, &get_current_frame()._renderFence));
 }
 
 void VulkanEngine::run()
