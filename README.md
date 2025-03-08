@@ -105,6 +105,9 @@ but you need to have 1 VkCommandPool and 1 VkCommandBuffer per thread (minimum),
 Once that is done we submit our commandbuffer to out queue but this is not thread safe.
 It's common to do the submit in a seperate background thread so we can continue running the render loop.
 
+When we use a command buffer in the main render loop of our program we also need to initialize a VkCommandBufferBeginInfo containing flags of the structure type - > we need to pass flags too (VkCOmmandBufferUsageFlags)
+we can leave info.pNext and pInheritanceInfo as nullptr tho. Heres a link for commandbufferbegininfo: https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#VkCommandBufferBeginInfo
+
 
 # VkQueue
 VkQueueSubmit is not thread safe.
@@ -208,6 +211,11 @@ VkWaitForFences(myFence);
 VkResetFences(myFence);
 
 ```
+
+
+# Synchronization using image barriers for different use cases : 
+
+https://github.com/KhronosGroup/Vulkan-Docs/wiki/Synchronization-Examples
 
 
 
