@@ -40,6 +40,8 @@ VkCommandBufferBeginInfo vkinit::command_buffer_begin_info(VkCommandBufferUsageF
 }
 //< init_cmd_draw
 
+
+
 //> init_sync
 VkFenceCreateInfo vkinit::fence_create_info(VkFenceCreateFlags flags /*= 0*/)
 {
@@ -180,7 +182,7 @@ VkRenderingInfo vkinit::rendering_info(VkExtent2D renderExtent, VkRenderingAttac
 VkImageSubresourceRange vkinit::image_subresource_range(VkImageAspectFlags aspectMask)
 {
     VkImageSubresourceRange subImage {};
-    subImage.aspectMask = aspectMask;
+    subImage.aspectMask = aspectMask; //this is either a msk for the color bit or the depth bit -> we only using color bit for now 
     subImage.baseMipLevel = 0;
     subImage.levelCount = VK_REMAINING_MIP_LEVELS;
     subImage.baseArrayLayer = 0;

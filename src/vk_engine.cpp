@@ -20,6 +20,9 @@
 
 #include <chrono>
 #include <thread>
+
+#include<vk_images.h>
+#include<vk_Initializers.h>
  
 constexpr bool bUseValidationLayers = true;
 
@@ -143,16 +146,7 @@ void VulkanEngine::create_swapchain(uint32_t width, uint32_t height) {
 
 }
 
-VkCommandBufferBeginInfo vkinit::command_buffer_begin_info(VkCommandBufferUsageFlags flags /*=0*/)
-{
-    VkCommandBufferBeginInfo info = {};
-    info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    info.pNext = nullptr;
 
-    info.pInheritanceInfo = nullptr;
-    info.flags = flags;
-    return info;
-}
 
 void VulkanEngine::init_swapchain() {
 	create_swapchain(_windowExtent.width, _windowExtent.height);
@@ -220,7 +214,14 @@ void VulkanEngine::cleanup()
         vkDeviceWaitIdle(_device);
 
         for (int i = 0; i < FRAME_OVERLAP; i++) {
-            vkDestroyCommandPool(_device, _frames[i]._commandPool, nullptr);//we cannot destory command buffers individually but destroying their parent pool destroys all of the childrens
+
+            //already written from before
+            vkDestroyCommandPool(_device, _frames[i]._commandPool, nullptr);
+
+            //destroy sync objects
+            vkDestroyFence(_device, _frames[i]._renderFence, nullptr);
+            vkDestroySemaphore(_device, _frames[i]._renderSemaphore, nullptr);
+            vkDestroySemaphore(_device, _frames[i]._swapchainSemaphore, nullptr);
         }
 
         destroy_swapchain();
@@ -262,6 +263,59 @@ void VulkanEngine::draw()
 
     //start command buffer recording
     VK_CHECK(vkBeginCommandBuffer(cmd, &cmdBeginInfo));
+
+
+    //make the swapchain image into writeable mode before render
+	vkutil::transition_image(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
+
+    //make clear color from fram number - will flash with 120 frame period
+    VkClearColorValue clearValue;
+    float flash = std::abs(std::sin(_frameNumber / 120.f));
+	clearValue = { {0.0f, 0.0f, flash, 1.0f} };
+
+	VkImageSubresourceRange clearRange = vkinit::image_subresource_range(VK_IMAGE_ASPECT_COLOR_BIT);
+	vkCmdClearColorImage(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_GENERAL, &clearValue, 1, &clearRange);
+	//transition image back so the swapchain can present it
+	vkutil::transition_image(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+
+    //finallize the command buffer so we cant add commands but we execute
+	VK_CHECK(vkEndCommandBuffer(cmd));
+
+    //prepare submission to queue
+	//wait on _presentSemaphore, signal on _renderSemaphore
+    //we will signal _renderSemaphore to signal render done
+	VkCommandBufferSubmitInfo cmdinfo = vkinit::command_buffer_submit_info(cmd);
+
+	VkSemaphoreSubmitInfo waitInfo = vkinit::semaphore_submit_info(VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, get_current_frame()._swapchainSemaphore);
+	VkSemaphoreSubmitInfo signalInfo = vkinit::semaphore_submit_info(VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT, get_current_frame()._renderSemaphore);
+
+	VkSubmitInfo2 submitInfo = vkinit::submit_info(&cmdinfo, &signalInfo, &waitInfo);
+
+    //submit command buffer to q and execute it
+    //_renderr fence will now block until execution is done
+	VK_CHECK(vkQueueSubmit2(_graphicsQueue, 1, &submitInfo, get_current_frame()._renderFence));
+
+
+    //prepare info 
+    //this will put the image we rendered into the window
+    //we wait for the _renderSemaphore ot signal
+    VkPresentInfoKHR presentInfo = {};
+	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    presentInfo.pNext = nullptr;
+	presentInfo.pSwapchains = &_swapchain;
+	presentInfo.swapchainCount = 1;
+
+	presentInfo.pWaitSemaphores = &get_current_frame()._renderSemaphore;
+	presentInfo.waitSemaphoreCount = 1;
+
+	presentInfo.pImageIndices = &swapchainImageIndex;
+
+    VK_CHECK(vkQueuePresentKHR(_graphicsQueue, &presentInfo));
+
+	//prepare for next frame
+	_frameNumber++;
+
+
 
 }
 

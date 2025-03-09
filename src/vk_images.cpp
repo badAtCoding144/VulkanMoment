@@ -30,3 +30,4 @@ void vkutil::transition_image(VkCommandBuffer cmd, VkImage image, VkImageLayout 
 
 	//TODO: try add more complicated transition functions that are more accurate and lightweight
 }
+

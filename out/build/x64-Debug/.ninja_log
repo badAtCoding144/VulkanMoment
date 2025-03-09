@@ -386,3 +386,10 @@
 1684	2174	7629719822100114	F:/Repositories/VulkanMoment/bin/engine.exe	43b1c800e4dccffd
 62	760	7629720149438758	src/CMakeFiles/engine.dir/vk_engine.cpp.obj	8324d6c049392ad2
 761	929	7629720156434017	F:/Repositories/VulkanMoment/bin/engine.exe	43b1c800e4dccffd
+91	926	7632198457249711	src/CMakeFiles/engine.dir/vk_images.cpp.obj	f27187dc72dd32f
+89	927	7632198457224626	src/CMakeFiles/engine.dir/vk_initializers.cpp.obj	3478225082f953ee
+85	991	7632198457189952	src/CMakeFiles/engine.dir/main.cpp.obj	e69a11babaf10529
+63	779	7632198608091336	src/CMakeFiles/engine.dir/vk_engine.cpp.obj	8324d6c049392ad2
+63	194	7632199206556193	src/CMakeFiles/engine.dir/vk_initializers.cpp.obj	3478225082f953ee
+66	772	7632199206586234	src/CMakeFiles/engine.dir/vk_engine.cpp.obj	8324d6c049392ad2
+772	1027	7632199213646851	F:/Repositories/VulkanMoment/bin/engine.exe	43b1c800e4dccffd
