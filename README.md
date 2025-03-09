@@ -12,7 +12,22 @@ struct FrameData{
 ```
 We need 2 semaphores -> `_swapchainSemaphore` is to wait for our swapchain image request by our render commands
 `_renderSemaphore` will be used to control presenting and image to the OS once the drawing finishes.
-Our `_renderFence` will let us wait forthe draw commands of a frame to finish.
+Our `_renderFence` will let us wait for the draw commands of a frame to finish.
+
+For our fence we use the flag `VK_FENCE_CREATE_SIGNALED_BIT`. This allows us to wait on an initialized fence without causing errors - this will block the thread when calling WaitFences the first frame when not set.
+
+`vkWaitForFences` and `vkResetFences` - always reset a fence after using it.
+
+Nanoseconds for the timeout if you use it with timeout 0 you can use it to know if GPU is still executing or not?.
+
+request an index `vkAcquireNextImageKHR` will request the index from the swapchain and if it doesn't have an image it will block the thread for timeout set - in NANOseconds.
+
+We send in `_swapchainSemaphore` this is to make sure we can sync other operations with holding a ready image to display.
+
+I don't think we used this initialization function in the code so go check out line 171 in file `vk_engine.cpp` I think we should call the function mentioned there to set our command buffer params but I made it work.
+
+We start our draw section of the renderloop by resetting our command buffers `get_current_frame()._mainCommandBuffer -> vkResetComandBuffer(cmkd,` 
+
 
 
 
