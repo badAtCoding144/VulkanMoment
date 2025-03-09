@@ -168,7 +168,10 @@ void VulkanEngine::init_commands() {
 
         //allocate default command buffer to use for rendering
         VkCommandBufferAllocateInfo cmdAllocInfo = {};
-        cmdAllocInfo.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_BUILD_GEOMETRY_INFO_KHR;
+        cmdAllocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO; //I had to change this to get rid of some errors because the type wrong
+        //we are allocating command buffers but never calling the actual function so we could remove some of this -> look at  file vk_initializers.cpp -> 
+        //VkCommandBufferAllocateInfo vkinit::command_buffer_allocate_info
+
         cmdAllocInfo.pNext = nullptr;
 		cmdAllocInfo.commandPool = _frames[i]._commandPool; //specify which command pool to allocate from
 		cmdAllocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY; 
