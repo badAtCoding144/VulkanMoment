@@ -1,5 +1,10 @@
 # Vulkan Notes
 
+# Main Render Loop logic
+
+TODO: make your own notes on this because holy this is importante
+
+
 # Image Layouts
 GPUs store images in different formats for different needs in their memory. An image layout is the vulkan abstraction over these formats. A image that is read-only is not going to be on the same layout as one that will be written to. To change the layout of an image, vulkan uses pipeline barriers. A pipeline barrier is a way to syncronize the commands from a single command buffer, but it also can do things such as convert the image layouts. How the layouts are implemented varies, and some transitions will actually be a no-op on some hardware. To get the transitions right, it is imperative to use validation layers, which are going to check that images are on their correct layouts for any given GPU operation. If not done, its very common to have code that works completely fine on NVidia hardware, but causes glitches on AMD, or the opposite.
 
@@ -7,6 +12,7 @@ The image we get from the swapchain is going to be in an invalid state, so if we
 
 On older versions of vulkan, these layout transitions would be done as part of a RenderPass.Not on vulkan 1.3 howevver so we use dynamic rendering, which means we will do those transitions manually, on the other side, we save all of the work and complexity of building a full renderpass.
 
+https://docs.vulkan.org/spec/latest/chapters/resources.html#resources-image-layouts
 
 # Render Loop:
 I am using double-buffered render structures. This way while the gpu is busy executing a frame worth of commands, the CPU can continue with the next frame. But once the next frame is calculated, we need to stop the CPU until the first frame is executed so that we can record its commands again.
@@ -212,6 +218,13 @@ VkResetFences(myFence);
 
 ```
 
+# Links to docs containing info about the intialization of buffer submit info - semaphore submit nfo - vksubmitinfo2
+
+https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#VkCommandBufferSubmitInfo
+
+https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#VkSemaphoreSubmitInfo
+
+https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#VkSubmitInfo2
 
 # Synchronization using image barriers for different use cases : 
 
