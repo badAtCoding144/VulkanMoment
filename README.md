@@ -26,7 +26,26 @@ We send in `_swapchainSemaphore` this is to make sure we can sync other operatio
 
 I don't think we used this initialization function in the code so go check out line 171 in file `vk_engine.cpp` I think we should call the function mentioned there to set our command buffer params but I made it work.
 
-We start our draw section of the renderloop by resetting our command buffers `get_current_frame()._mainCommandBuffer -> vkResetComandBuffer(cmkd,` 
+We start our draw section of the renderloop by resetting our command buffers `cmd = get_current_frame()._mainCommandBuffer -> vkResetComandBuffer(cmd,0)` this removes all commands and frees the buffers memory.
+We then create a `VkCommandBufferBeginInfo` and give it the flage `VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT` -> slight speedup apparently from command encoding if we tell the drivers it will only be submitted and executed once, this works because we do one submit per frame.
+We then use the aforementioned `cmd` and `VkCommandBufferBeginInfo` to `vkBeginCommandBuffer` which starts recording commands into the buffer again.
+
+First we transition (you can find this function in `vk_images.cpp/h`) the swapchain image to a drawable layout and then perform `VkCmdClear` on it and then transition it back for a display optimal layout -> take note of how we use a pipeline barrier here (`VkImageMemoryBarrier2`).
+In this we set the old and new layouts of the image, in the `StageMask` we are doing `ALL_COMMANDS`. It's quite inefficient -> TODO: figure out how to use more accurate `StageMask` for example in a post-process chain.
+`ALL_COMMANDS` just means that the barrier will block the gpu completely at the barrier - it's possible to overlap the GPU pipeline across the barrier if you know what you're doing -> `AccessMask` is similar to `StageMask`.
+
+We set `VK_ACCESS_2_MEMORY_READ_BIT` and `VK_ACCESS_2_MEMORY_WRITE_BIT` as our source and destination -> these are generics.
+
+READ THIS: https://github.com/KhronosGroup/Vulkan-Docs/wiki/Synchronization-Examples
+
+As part of the barrier we need a `VkImageSubresourceRange` -> there is an init function for this in `vk_initializers.h/cpp` -> the `AccessMask` is the most important parameter to pass and will be `VK_IMAGE_ASPEC_COLOR_BIT` or `VK_IMAGE_ASPECT_DEPTH_BIT` we will use the former since we not doing depth buffers and shadow maps and stuff yet - just show color image boss.
+
+
+
+
+
+
+
 
 
 
