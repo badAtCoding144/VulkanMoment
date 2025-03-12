@@ -38,11 +38,29 @@ We set `VK_ACCESS_2_MEMORY_READ_BIT` and `VK_ACCESS_2_MEMORY_WRITE_BIT` as our s
 
 READ THIS: https://github.com/KhronosGroup/Vulkan-Docs/wiki/Synchronization-Examples
 
-As part of the barrier we need a `VkImageSubresourceRange` -> there is an init function for this in `vk_initializers.h/cpp` -> the `AccessMask` is the most important parameter to pass and will be `VK_IMAGE_ASPEC_COLOR_BIT` or `VK_IMAGE_ASPECT_DEPTH_BIT` we will use the former since we not doing depth buffers and shadow maps and stuff yet - just show color image boss.
+As part of the barrier we need a `VkImageSubresourceRange` -> there is an init function for this in `vk_initializers.h/cpp` -> the `aspectMask` is the most important parameter to pass and will be `VK_IMAGE_ASPECT_COLOR_BIT` or `VK_IMAGE_ASPECT_DEPTH_BIT` we will use the former since we not doing depth buffers and shadow maps and stuff yet - just show color image boss.
 
+We will keep it as image except when the target layout is `VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL` - which we use with depth buffers.
 
+Once we have the range and the barrier, we put them in a `VkDependencyInfo` and call `VkCmdPipelineBarrier2` - it's possible to layout transition multiple images at once by sending more `imageMemoryBarrier`s which could improve performance if we are doing transitions or barriers for multiple things at once.
 
+We then start drawing using `vk_images.h` in `vk_engine.cpp` 
 
+We begin by transitioning the swapchain image. `VK_IMAGE_LAYOUT_UNDEFINED` Is the “dont care” layout. Its also the layout newly created images will be at. We use it when we dont care about the data that is already in the image, and we are fine with the GPU destroying it.
+
+The target we want is the `VK_IMAGE_LAYOUT_GENERAL`. This is a general purpose layout allowing reading and writing from the image. It's not optimal for rendering but we want to use `vkCmdClearColorImage`. This is what we use if we want to write an image from a compute shader -> for read only images or an image to be used with rasterization commands there are other options.
+
+https://docs.vulkan.org/spec/latest/chapters/resources.html#resources-image-layouts
+
+We calculate a clear color through a basic formula with the _frameNumber - cycling through a sine functions works for now - interpolating through a black and blue color.
+
+`vkCmdClearColorImage` requires 3 main parameters - an image, a clear color and a subresource range for what part of the image to clear (kind of like a stencil??)
+
+After executing the clear command we need to transition the image to `VK_IMAGE_LAYOUT_PRESENT_KHR` which is the only image layout that the swapchain allows for presenting to screen - at the end we call `vkEndCommandBuffer`
+
+Next we want to connect the synchronization structures for the logic to interact correctly with the swapchain before we go and call `VkQueueSubmit2` (part of synchronization2).
+
+We require a `VkSubmitInfo2` which contains information on the semaphores used as part of the submit -> but we require a `VkSemaphoreSubmitInfo` for each of the semaphores it uses, and a `VkCommandBufferSubmitInfo` for the command buffers that will be enqueued - check out `vk_initializers.cpp`.
 
 
 
