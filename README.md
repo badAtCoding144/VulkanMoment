@@ -91,6 +91,29 @@ At the end of the function we increment our frame counter.
 
 
 
+# Deletion Queue
+
+As we add more vulkan structs we need to handle their cleanup. 
+
+We are adding a new struct to the engine called a `DeletionQueue` -> this is a common approach that involves adding things we want to delete into a queue and then running through the queue to delete them in the correct order, sparing us the effort of writing the long cleanup function and having to keep it synchronized.
+
+We are keeping it simple and having it store std::function callbacks in a deque.
+
+We are using a FIFO so that when we flush the deletion it destroys the objects added last first.
+
+The std::function stores a lambda, and we can use it to store a callback with some data.
+
+Doing callbacks similar to this is innefficient at scale, because we are storing whole std::functions for every object we are deleting.
+
+A better implementation would be to store arrays of vulkan handles and delete them from a loop.
+
+We are adding a `_deletionQueue` and `_mainDeletionQueue` to our `FrameData` struct and `VulkanEngine` class.
+
+We then call it from 2 places - right after we wait on the Fence per frame and from the `cleanup()` function after the `WaitIdle` call.
+
+By flushing it right after the fence we make sure that the GPU finishes execution for that frame so we can delete our objects for that specific frame safely. We also want to make sure we free those per frame resources when destorying the rest of the frame data.
+
+Now whenever we add new vulkan objects we just add them to our deletionqueue
 
 
 
