@@ -1,19 +1,17 @@
 ﻿//> includes
 #include "vk_engine.h"
 
-#include <SDL.h>
-#include <SDL_vulkan.h>
-#include <SDL_keyboard.h>
-#include <SDL_keycode.h>
-#include <SDL_scancode.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_vulkan.h>
+#include <SDL2/SDL_keyboard.h>
+#include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_scancode.h>
 
 #include <vk_initializers.h>
 #include <vk_types.h>
 #include <fmt/core.h> // Add this include at the top of the file
 
-// --- other includes ---
-#include <vk_types.h>
-#include <vk_initializers.h>
+
 
 //bootstrap library
 #include "VkBootstrap.h"
@@ -22,7 +20,6 @@
 #include <thread>
 
 #include<vk_images.h>
-#include<vk_Initializers.h>
  
 constexpr bool bUseValidationLayers = true;
 
