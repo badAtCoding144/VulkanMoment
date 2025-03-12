@@ -34,6 +34,8 @@ VulkanEngine& VulkanEngine::Get() { return *loadedEngine; }
 
 
 
+
+
 void VulkanEngine::init()
 {
     // only one engine initialization is allowed with the application.
@@ -207,6 +209,8 @@ void VulkanEngine::init_sync_structures() {
 
 
 
+
+
 //usually destroying the engine is done in the reverse order of creation, if we know what we doing we could deviate from this but not now
 //in this case swapchain -> device -> surface -> instance -> SDL Window
 void VulkanEngine::cleanup()
@@ -225,7 +229,13 @@ void VulkanEngine::cleanup()
             vkDestroyFence(_device, _frames[i]._renderFence, nullptr);
             vkDestroySemaphore(_device, _frames[i]._renderSemaphore, nullptr);
             vkDestroySemaphore(_device, _frames[i]._swapchainSemaphore, nullptr);
+
+            //flush
+			_frames[i]._DeletionQueue.flush();
         }
+
+        //flush the main deletion queue 2
+        _mainDeletionQueue.flush();
 
         destroy_swapchain();
 
@@ -250,6 +260,10 @@ void VulkanEngine::draw()
 {
     //wait for the gpu to finish rendering the last frame (timeout at 1 sec)
 	VK_CHECK(vkWaitForFences(_device, 1, &get_current_frame()._renderFence, true, 1000000000));
+
+    //delete previous frames stuff.
+    get_current_frame()._DeletionQueue.flush();
+
 	VK_CHECK(vkResetFences(_device, 1, &get_current_frame()._renderFence));
 
     //request image from the swapchain

@@ -11,6 +11,32 @@
 
 constexpr unsigned int FRAME_OVERLAP = 2;
 
+
+
+/*
+Inneficient implementation for deletion queue
+
+*/
+struct DeletionQueue
+{
+	std::deque<std::function<void()>> deletors;
+
+	void push_function(std::function<void()>&& function) {
+		deletors.push_back(function);
+	}
+
+	void flush() {
+		for (auto it = deletors.rbegin(); it != deletors.rend(); it++) {
+			(*it)();
+		}
+		deletors.clear();
+	}
+
+};
+
+
+
+
 struct FrameData {
 	VkCommandPool _commandPool;
 	VkCommandBuffer _mainCommandBuffer;
@@ -18,11 +44,17 @@ struct FrameData {
 	VkSemaphore _swapchainSemaphore,_renderSemaphore;
 	VkFence _renderFence;
 
+	DeletionQueue _DeletionQueue;
 };
+
+
 
 
 class VulkanEngine {
 public:
+
+	DeletionQueue _mainDeletionQueue;
+
 
 	FrameData _frames[FRAME_OVERLAP];
 	FrameData& get_current_frame() { return _frames[_frameNumber % FRAME_OVERLAP]; };
