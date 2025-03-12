@@ -63,6 +63,32 @@ Next we want to connect the synchronization structures for the logic to interact
 We require a `VkSubmitInfo2` which contains information on the semaphores used as part of the submit -> but we require a `VkSemaphoreSubmitInfo` for each of the semaphores it uses, and a `VkCommandBufferSubmitInfo` for the command buffers that will be enqueued - check out `vk_initializers.cpp`.
 
 
+`VkCommandBufferSubmitiInfo` only needs the command buffer handle - we are leaving the device mask as 0. -> https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#VkCommandBufferSubmitInfo
+
+`VkSemaphoreSubmitInfo` requires a stage mask which is the same as with `transition_image` -> other than that we only need a semaphore handle. -> https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#VkSemaphoreSubmitInfo
+
+The device index param is only used for multi-gpu semaphore use cases.
+
+Value is used for timeline semaphores which work through a counter instead of a binary state - we will not use them so we can default it to 1.
+
+`VkSubmitInfo2` arranges everything together. It needs the comand submit info, and the semaphore wait and signal infos. -> https://docs.vulkan.org/spec/latest/chapters/cmdbuffers.html#VkSubmitInfo2
+
+We are using 1 semaphore each forr waiting and signaling -> it is possible to signal or wait on multiple at once.
+
+After creating each of the different info structs we call `vkQueueSubmit2` -> for command info we send the command we just recorded.
+
+Our wait info we will use the swapchain semaphore of the current frame. 
+
+`vkAcquireNextImageKHR` will set the same semaphore to be signalled -> we make sure that the commands executed here wont begin until the swapchain image is ready.
+
+For the fence we are using `current_frame()._renderFence`, at the start of the draw loop we waited for this fence to be ready.
+
+Lastly we present the frame using `vkQeueuPresent` which has a similar param strructure as the queue submit -> it also has the pointers for the semaphores, but it has an image index and swapchain index.
+
+We wait on the _renderSemaphore and connect it to the swapchain.
+
+At the end of the function we increment our frame counter.
+
 
 
 
