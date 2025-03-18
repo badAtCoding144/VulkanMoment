@@ -59,7 +59,8 @@ public:
 
 	VmaAllocator _allocator;
 
-
+	AllocatedImage _drawImage;
+	VkExtent2D _drawExtent;
 
 	DeletionQueue _mainDeletionQueue;
 
