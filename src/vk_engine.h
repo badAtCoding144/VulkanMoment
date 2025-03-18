@@ -9,6 +9,9 @@
 
 #include <vkBootstrap.h>
 
+#define VMA_IMPLEMENTATION
+#include "vk_mem_alloc.h"
+
 constexpr unsigned int FRAME_OVERLAP = 2;
 
 
@@ -45,6 +48,7 @@ struct FrameData {
 	VkFence _renderFence;
 
 	DeletionQueue _DeletionQueue;
+
 };
 
 
@@ -52,6 +56,10 @@ struct FrameData {
 
 class VulkanEngine {
 public:
+
+	VmaAllocator _allocator;
+
+
 
 	DeletionQueue _mainDeletionQueue;
 

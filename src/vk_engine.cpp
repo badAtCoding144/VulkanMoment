@@ -21,6 +21,11 @@
 
 #include<vk_images.h>
  
+
+
+
+
+
 constexpr bool bUseValidationLayers = true;
 
 VulkanEngine* loadedEngine = nullptr;
@@ -109,6 +114,20 @@ void VulkanEngine::init_vulkan() {
     //use vkbootstrap to get a graphics queue
 	_graphicsQueue = vkbDevice.get_queue(vkb::QueueType::graphics).value();
     _graphicsQueueFamily = vkbDevice.get_queue_index(vkb::QueueType::graphics).value();
+
+
+
+	//create memory allocator - we outsourcing this because its hard work and error prone
+	VmaAllocatorCreateInfo allocatorInfo = {};
+	allocatorInfo.physicalDevice = _chosenGPU;
+	allocatorInfo.device = _device;
+	allocatorInfo.instance = _instance;
+    allocatorInfo.flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
+	vmaCreateAllocator(&allocatorInfo, &_allocator);
+
+    _mainDeletionQueue.push_function([&]() {
+		vmaDestroyAllocator(_allocator);
+    });
 
 }
 

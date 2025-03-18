@@ -189,7 +189,7 @@
 2157	2410	7635075094447820	third_party/SDL/CMakeFiles/SDL2.dir/src/joystick/hidapi/SDL_hidapi_wii.c.obj	51dcc57c3e37b6ff
 322	368	7635075076282190	third_party/SDL/include/SDL2/SDL_types.h	db156be403cd0a63
 322	368	7635075076282190	F:/Repositories/VulkanMoment/out/build/x64-Debug/third_party/SDL/include/SDL2/SDL_types.h	db156be403cd0a63
-369	838	7635075076567329	third_party/SDL/CMakeFiles/SDL2.dir/src/SDL.c.obj	fe259437781e3926
+63	196	7635079608385591	third_party/SDL/CMakeFiles/SDL2.dir/src/SDL.c.obj	fe259437781e3926
 326	368	7635075076327266	third_party/SDL/include/SDL2/SDL_version.h	6f72bda57a5cb858
 326	368	7635075076327266	F:/Repositories/VulkanMoment/out/build/x64-Debug/third_party/SDL/include/SDL2/SDL_version.h	6f72bda57a5cb858
 330	368	7635075076377291	third_party/SDL/include/SDL2/SDL_video.h	830f799d208c08c7
@@ -277,7 +277,7 @@
 981	1115	7635075082693574	third_party/SDL/CMakeFiles/SDL2.dir/src/render/psp/SDL_render_psp.c.obj	c23e6c5245916020
 977	1120	7635075082653574	third_party/SDL/CMakeFiles/SDL2.dir/src/render/ps2/SDL_render_ps2.c.obj	fe39d13d1ed020ff
 3285	3431	7635075105726583	src/CMakeFiles/engine.dir/vk_descriptors.cpp.obj	f232cb0eba487c11
-2946	3566	7635075107946958	third_party/SDL/SDL2d.dll	bfb01afe240b3d77
+196	320	7635079609708407	third_party/SDL/SDL2d.dll	bfb01afe240b3d77
 607	1132	7635075078947823	third_party/SDL/CMakeFiles/SDL2.dir/src/joystick/SDL_joystick.c.obj	2ead2979a80fb02
 1053	1136	7635075083413560	third_party/SDL/CMakeFiles/SDL2.dir/src/render/vitagxm/SDL_render_vita_gxm_tools.c.obj	92be553163352e50
 886	1140	7635075081738445	third_party/SDL/CMakeFiles/SDL2.dir/src/render/SDL_render.c.obj	cd4215c0b720a9fe
@@ -374,9 +374,6 @@
 3288	3430	7635075105756579	src/CMakeFiles/engine.dir/vk_pipelines.cpp.obj	437a3e0f0504f3e3
 3295	3431	7635075105836570	src/CMakeFiles/engine.dir/camera.cpp.obj	2ab7e70aed2c6f50
 3282	3432	7635075105706608	src/CMakeFiles/engine.dir/vk_images.cpp.obj	f27187dc72dd32f
-2946	3566	7635075107946958	third_party/SDL/SDL2d.lib	bfb01afe240b3d77
-3290	4036	7635075105786609	src/CMakeFiles/engine.dir/vk_engine.cpp.obj	8324d6c049392ad2
-63	196	7635079608385591	third_party/SDL/CMakeFiles/SDL2.dir/src/SDL.c.obj	fe259437781e3926
-196	320	7635079609708407	third_party/SDL/SDL2d.dll	bfb01afe240b3d77
 196	320	7635079609708407	third_party/SDL/SDL2d.lib	bfb01afe240b3d77
+3290	4036	7635075105786609	src/CMakeFiles/engine.dir/vk_engine.cpp.obj	8324d6c049392ad2
 321	565	7635079610953598	F:/Repositories/VulkanMoment/bin/engine.exe	43b1c800e4dccffd
